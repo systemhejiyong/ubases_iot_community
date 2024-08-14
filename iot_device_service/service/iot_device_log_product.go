@@ -226,9 +226,10 @@ func (s *IotDeviceLogProductSvc) QueryDeviceLogs(request *proto.ProductLogReques
 
 		item.OnlineStatus = iotutil.ToString(m[iotconst.FIELD_ONLINE])
 		item.Properties = make([]*proto.ProductLogEventProperties, 0)
-		if m["controls"] == iotconst.FIELD_ONLINE {
-			continue
-		}
+		//注释，解决设备日志中无法出现设备在线记录数据的问题
+		//if m["controls"] == iotconst.FIELD_ONLINE {
+		//	continue
+		//}
 
 		for col, val := range m {
 			//control上报的属性名称
@@ -244,6 +245,15 @@ func (s *IotDeviceLogProductSvc) QueryDeviceLogs(request *proto.ProductLogReques
 			controls := strings.Split(strVal, ",")
 			for _, control := range controls {
 				if control == "" {
+					continue
+				}
+				if control == "onlineStatus" {
+					item.Properties = append(item.Properties, &proto.ProductLogEventProperties{
+						Dpid:       iotutil.ToString(0),
+						Value:      item.OnlineStatus,
+						Identifier: "在线状态",
+						Name:       "在线状态",
+					})
 					continue
 				}
 				if propertyVal, ok := m[control]; ok {

@@ -126,7 +126,6 @@ func (s CommonService) LangResultConvert(res []*protosService.LangResources) map
 
 // RegionList 区域数据列表
 func (s CommonService) RegionList(lang, ip string) ([]*entitys.SysRegionServerEntitysList, error) {
-	//geo, err := iotutil.Geoip(ip, config.Global.IpService.QueryUrl, config.Global.IpService.AppCode)
 	geo, err := controls.Geoip(ip)
 	country := geo.Country
 	result := []*entitys.SysRegionServerEntitysList{}
